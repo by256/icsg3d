@@ -97,12 +97,11 @@ if __name__ == '__main__':
     data_path = os.path.join('data', mode, 'matrices')
     target = 'formation_energy_per_atom'
     n_interps=namespace.ninterps
-    os.makedirs('output/interpolation', exist_ok=True)
-    os.makedirs('output/interpolation/cifs', exist_ok=True)
+    os.makedirs(os.path.join('output/', 'interpolation'), exist_ok=True)
 
-    vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_' + mode + '_full.best.hdf5')
-    unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '_full.best.hdf5')
-    unet_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '_full.best.h5')
+    vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_' + mode + '.best.hdf5')
+    unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '.best.hdf5')
+    unet_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '.best.h5')
 
     df = pd.read_csv(csv_path)
     df['bin'] = pd.qcut(df[target], namespace.ncond, np.arange(namespace.ncond)).astype(int)

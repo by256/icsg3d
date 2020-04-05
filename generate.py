@@ -95,7 +95,7 @@ if __name__ == '__main__':
     gamma=namespace.gamma
 
     # Output dirs
-    out_dir = os.path.join('output/results', base_formula + '_' + str(datetime.now()) + '_v=' + str(variance))
+    out_dir = os.path.join('output', 'results', base_formula + '_' + str(datetime.now()) + '_v=' + str(variance))
     os.makedirs(os.path.join(out_dir, 'cifs'))
     os.makedirs(os.path.join(out_dir, 'densities'))
     os.makedirs(os.path.join(out_dir, 'species'))

@@ -25,8 +25,8 @@ if __name__ == '__main__':
     af += ']}'
     cs = ", 'crystal_system': '" +namespace.system+"'" if namespace.system else ''
     query = eval("{" + af + cs + "}")
-    print(query)
     fields = ['task_id', 'pretty_formula', 'formation_energy_per_atom', 'cif', 'band_gap', 'diel.poly_electronic', 'diel.refractive_index', 'piezo.eij_max', 'energy_per_atom', 'elasticity.K_Voigt_Reuss_Hill', 'elasticity.G_Voigt_Reuss_Hill', 'elasticity.poisson_ratio', 'nsites']
+    
     os.makedirs(save_dir, exist_ok=True)
     os.makedirs(os.path.join(save_dir, 'cifs'), exist_ok=True)
 
