@@ -3,6 +3,15 @@ A Generative deep learning pipeline for 3D crystal structures and property predi
 
 ![Example crystals generated with our system](images/crystals-1.png)
 
+# Architectures
+
+![VAE](images/vae-1.png)
+
+![Unet](images/unet-1.png)
+
+![CGCNN](images/cgcnn-1.png)
+
+
 # Installation
 1. Clone the git repository
 > git clone https://github.com/by256/icsg3d
