@@ -1,3 +1,7 @@
+"""
+ICSG3D/unet/get_weights.py
+Function for calculating the class weights for the UNet loss
+"""
 import numpy as np
 import os
 
