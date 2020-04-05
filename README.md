@@ -4,11 +4,11 @@ A Generative deep learning pipeline for 3D crystal structures and property predi
 ![Example crystals generated with our system](images/crystals-1.png)
 
 # Architectures
-
+## VAE
 ![VAE](images/vae-1.png)
-
+## UNET
 ![Unet](images/unet-1.png)
-
+## CGCNN
 ![CGCNN](images/cgcnn-1.png)
 
 
@@ -41,6 +41,7 @@ Make sure you train the VAE second (as it uses the unet as a DFC perceptual mode
 # View some results
 1. Interpolations in vae latent space
 > python3 interpolate.py --name ternary_cubic
+![Interpolations](images/interpolate-1.png)
 
 2. Whole pipeline plots
 > python3 view_results.py --name ternary_cubic
