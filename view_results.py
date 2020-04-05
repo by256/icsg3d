@@ -36,6 +36,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', metavar='batch_size', type=int, help='Batch size', default=1)
     parser.add_argument('--nrot', metavar='nrot', type=int, help='nrot', default=10)
     parser.add_argument('--samples', metavar='samples', type=int, help='Number of samples', default=78750)
+    parser.add_argument('--split', metavar='split', type=float, help='Train-test split fraction', default=0.8)
     namespace = parser.parse_args()
 
     batch_size = namespace.batch_size
@@ -45,11 +46,11 @@ if __name__ == '__main__':
     path = os.path.join('data', mode, 'matrices')
     cif_path = os.path.join('data', mode, 'cifs')
     csv_path = os.path.join('data', mode, mode+'.csv')
-    vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_'+mode+'_full.best.hdf5')
-    unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_'+mode+'_full.best.hdf5')
-    perceptual_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '_full.best.h5')
+    vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_'+mode+'.best.hdf5')
+    unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_'+mode+'.best.hdf5')
+    perceptual_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '.best.h5')
 
-    training_ids, validation_ids = data_split(path, n, n_rot=namespace.nrot)
+    training_ids, validation_ids = data_split(path, n, frac=namespace.split, n_rot=namespace.nrot)
     _generator = VAEDataGenerator(validation_ids, data_path=path, property_csv=csv_path, batch_size=batch_size, n_channels=input_shape[-1], shuffle=True, return_S=True)
 
     # LOAD VAE
