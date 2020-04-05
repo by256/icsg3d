@@ -1,7 +1,7 @@
 # Inorganic Crystal Structure Generation in 3D (ICSG3D)
 A Generative deep learning pipeline for 3D crystal structures and property prediction. Soure code associated with the paper ...
 
-![Example crystals generated with our system](images/fig-crystals.pdf)
+![Example crystals generated with our system](images/crystals-1.png)
 
 # Installation
 1. Clone the git repository
