@@ -26,7 +26,7 @@ For example, to retrieve all CIFs for ternary cubics (ABC):
 
 This will create a data/ternary_cubic folder containing the cifs and a csv with associated properties
 
-# Creating the natwork inputs
+# Creating the network inputs
 The various network input matrices can be created by
 > mpiexec -n 4 python3 create_matrices.py --name=ternary_cubic
 
