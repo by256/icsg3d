@@ -140,6 +140,9 @@ def r_m(y_true, y_pred):
     return recall
 
 def wr_m(y_true, y_pred):
+    """
+    Weighted Recall, removes the zero class from calculations
+    """
     weights = np.ones(95)
     weights[0] = 0.0
     true_positives = K.sum(K.round(K.clip(weights * y_true * y_pred, 0, 1)))  
@@ -148,12 +151,14 @@ def wr_m(y_true, y_pred):
     return recall
 
 def p_m(y_true, y_pred):
+    """ Precision metric """
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
     precision = true_positives / (predicted_positives + K.epsilon())
     return precision
 
 def f1_m(y_true, y_pred):
+    """ F1-score metric"""
     precision = p_m(y_true, y_pred)
     recall = r_m(y_true, y_pred)
     return 2*((precision*recall)/(precision+recall+K.epsilon()))
