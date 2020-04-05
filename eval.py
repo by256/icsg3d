@@ -61,9 +61,9 @@ if __name__ == '__main__':
     n = namespace.samples
     batch_size=namespace.batch_size
     eps = namespace.eps_frac
-    vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_'+mode+'_full.best.hdf5')
-    unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_'+mode+'_full.best.hdf5')
-    perceptual_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '_full.best.h5')
+    vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_'+mode+'.best.hdf5')
+    unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_'+mode+'.best.hdf5')
+    perceptual_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '.best.h5')
     clustering_max_iters = 5
 
     os.makedirs(os.path.join('output', 'eval', mode), exist_ok=True)

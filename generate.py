@@ -75,9 +75,9 @@ if __name__ == '__main__':
     base_target_value = df[df['task_id'] == base_compound][namespace.target].values[0]
 
 
-    vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_'+mode+'_full.best.hdf5')
-    unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_'+mode+'_full.best.hdf5')
-    perceptual_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '_full.best.h5')
+    vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_'+mode+'.best.hdf5')
+    unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_'+mode+'.best.hdf5')
+    perceptual_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '.best.h5')
 
 
     if mode == 'mixed':
