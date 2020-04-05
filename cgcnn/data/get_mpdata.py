@@ -13,7 +13,7 @@ with open('./training-data-mp-ids.csv', 'r') as f:
     reader = csv.reader(f)
     mp_ids = [x[0] for x in list(reader)]
 
-api_key = 'RLy6D8Is3WPSjatK'
+api_key = 'INSERT KEY HERE'
 base_url = 'https://www.materialsproject.org/rest/v1/materials/'
 csv_data = []
 col_names = ['mp_id', 'full_formula', 'unit_cell_formula', 'formation_energy_per_atom', 
