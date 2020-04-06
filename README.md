@@ -15,14 +15,18 @@ Our pipeline consists of 3 components.
 
 ![VAE](images/vae-1.png)
 Encoder: 4x 3D convolutions, BatchNorm, ReLU and Maxpooling
+
 Bottleneck: 3D convolution, LeakyReLU, Dense (256), 2x Dense (256) (\mu and \sigma)
+
 Decoder: 4x 3D convolutions, BatchNorm, ReLU and upsampling
 
 ### UNET
 
 ![Unet](images/unet-1.png)
 Downward: 4 x 2 x 3D convolutions, ReLU, BatchNorm, and pooling
+
 Bottleneck: 2 x 3D convolutions, ReLU BatchNorm
+
 Upward: 4 x 2 x 3D convolutions, ReLU, BatchNorm and UpSampling
 
 ### CGCNN
@@ -58,7 +62,7 @@ Trai the unet for as many epochs as needed
 ## Train the VAE
 
 Make sure you train the VAE second (as it uses the unet as a DFC perceptual model)
-> python3 train_vae.py --name ternary_cubic --nsamples 1000 --epochs 250
+> python3 train_vae.py --name perovskites --nsamples 1000 --epochs 250
 
 ## View some results
 
