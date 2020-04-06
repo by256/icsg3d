@@ -1,55 +1,79 @@
 # Inorganic Crystal Structure Generation in 3D (ICSG3D)
-A Generative deep learning pipeline for 3D crystal structures and property prediction. Soure code associated with the paper ...
 
 ![Example crystals generated with our system](images/crystals-1.png)
+A deep learning pipeline for generation of 3D crystal structures and prediction of their properties. All source code and images are associated with the paper [...]()
 
-# Architectures
-## VAE
+## Architecture
+
+Our pipeline consists of 3 components.
+
+1. A Conditional Deep Feature Consistent Variational Autoencoder
+2. A UNet semantic segmentation network
+3. A Crystal Graph Neural Network
+
+### VAE
+
 ![VAE](images/vae-1.png)
-## UNET
+Encoder: 4x 3D convolutions, BatchNorm, ReLU and Maxpooling
+Bottleneck: 3D convolution, LeakyReLU, Dense (256), 2x Dense (256) (\mu and \sigma)
+Decoder: 4x 3D convolutions, BatchNorm, ReLU and upsampling
+
+### UNET
+
 ![Unet](images/unet-1.png)
-## CGCNN
+Downward: 4 x 2 x 3D convolutions, ReLU, BatchNorm, and pooling
+Bottleneck: 2 x 3D convolutions, ReLU BatchNorm
+Upward: 4 x 2 x 3D convolutions, ReLU, BatchNorm and UpSampling
+
+### CGCNN
+
 ![CGCNN](images/cgcnn-1.png)
 
+## Installation
 
-# Installation
 1. Clone the git repository
-> git clone https://github.com/by256/icsg3d
+    > git clone https://github.com/by256/icsg3d
 2. Install requirements
-> python3 -m pip install -r requirements.txt
+    > python3 -m pip install -r requirements.txt
 
-# Getting Data
-The first stage of the pipeline is to retrieve crystallographic information files (CIFs) to train the deep learning pipeline. In theory these can be from any source, but by default we use the materialsproject API.
+## Getting Data
 
-For example, to retrieve all CIFs for ternary cubics (ABC):
-> python3 query_matproj.py --anonymous_formula="{'A': 1.0, 'B': 1.0, 'C':1.0}" --system=cubic --name=ternary_cubic
+The system works on crystallographic information files (CIFs) to train the deep learning pipeline. In theory these can be from any source, but by default we use the materialsproject API.
 
-This will create a data/ternary_cubic folder containing the cifs and a csv with associated properties
+For example, to retrieve all CIFs for cubic perovskits (ABX3):
+> python3 query_matproj.py --anonymous_formula="{'A': 1.0, 'B': 1.0, 'C':3.0}" --system=cubic --name=perovskites
 
-# Creating the network inputs
+This will create a data/perovskites folder containing the cifs and a csv with associated properties
+
+## Creating the network inputs
+
 The various network input matrices can be created by
-> mpiexec -n 4 python3 create_matrices.py --name=ternary_cubic
+> mpiexec -n 4 python3 create_matrices.py --name=perovskites
 
-# Train the UNET
+## Train the UNET
+
 Trai the unet for as many epochs as needed
-> python3 train_unet.py --name ternary_cubic --samples 10000 --epochs 50
+> python3 train_unet.py --name perovskites --samples 10000 --epochs 50
 
-# Train the VAE
+## Train the VAE
+
 Make sure you train the VAE second (as it uses the unet as a DFC perceptual model)
 > python3 train_vae.py --name ternary_cubic --nsamples 1000 --epochs 250
 
-# View some results
-1. Interpolations in vae latent space
-> python3 interpolate.py --name ternary_cubic
+## View some results
+
 ![Interpolations](images/interpolate-1.png)
 
+1. Interpolations in vae latent space
+    > python3 interpolate.py --name perovskites
 2. Whole pipeline plots
-> python3 view_results.py --name ternary_cubic
-
+    > python3 view_results.py --name perovskites
 3. Evaluate coordinates and lattice params
-> python3 eval.py --name ternary_cubic
+    > python3 eval.py --name perovskites
 
-# Generate new samples
-> python3 generate.py --name ternary_cubic --nsamples 1000 --base mp-1234
+## Generate new samples
 
-This will create a new directory in Results where you will find Cifs, density matrices, species matrices and properties.
+Attempt to generate 1000 new samples arund a base compound CeCrO3 with variance 0.5
+> python3 generate.py --name perovskites --nsamples 1000 --base CeCrO3 --var 0.5
+
+This will create a new directory where you will find Cifs, density matrices, species matrices and properties for all generated compounds.
