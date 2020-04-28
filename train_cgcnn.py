@@ -9,10 +9,11 @@ from cgcnn.cgcnn import CGCNN
 from cgcnn.data import CifDataGenerator
 
 
-data_dir = 'data/cgcnn_cifs/'
+data_dir = 'cgcnn/data/'
+target = 'formation_energy_per_atom'
 batch_size = 32
-training_data = CifDataGenerator(data_dir, batch_size=batch_size, start_idx=0, end_idx=16384)
-validation_data = CifDataGenerator(data_dir, batch_size=batch_size, start_idx=16384, end_idx=16384+2048)
+training_data = CifDataGenerator(data_dir, target, batch_size=batch_size, start_idx=0, end_idx=16384)
+validation_data = CifDataGenerator(data_dir, target, batch_size=batch_size, start_idx=16384, end_idx=16384+2048)
 print('training_data', len(training_data), 'validation_data', len(validation_data))
 
 
