@@ -1,6 +1,6 @@
 # Inorganic Crystal Structure Generation in 3D (ICSG3D)
 
-!['TOC'](images.toc.png)
+!['TOC'](images/toc.png)
 
 A deep learning pipeline for generation of 3D crystal structures and prediction of their properties. All source code and images are associated with the paper [3-D Inorganic Crystal Structure Generation \\and Property Prediction via Representation Learning]()
 ![Example crystals generated with our system](images/crystals-1.png)
