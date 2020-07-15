@@ -96,27 +96,28 @@ class GaussianDistance:
 
 
 class CifDataGenerator(Sequence):
-    def __init__(self, data_directory, batch_size=64, max_num_nbr=12, dmin=0, radius=8, step=0.2, shuffle=True, start_idx=None, end_idx=None):
+    def __init__(self, data_directory, target, batch_size=64, max_num_nbr=12, dmin=0, radius=8, step=0.2, pad_dim=50, shuffle=True, start_idx=None, end_idx=None):
         self.data_directory = data_directory
+        self.target = target
         self.batch_size = batch_size
-        self.start_idx = start_idx
-        self.end_idx = end_idx
-        self.shuffle = shuffle
-        self.df = pd.read_csv(data_directory + 'id_prop.csv', header=None)
-        self.df = self.df.sample(frac=1, random_state=np.random.seed(11)).reset_index(drop=True)
-        if self.end_idx:
-            self.df = self.df.iloc[self.start_idx:self.end_idx, :]
-        self.df['cond'] = self.df[0].apply(lambda x: self.less_than_n(x))
-        self.df = self.df[self.df['cond'] == 1]
-        self.df.drop(['cond'], axis=1)
-
-        self.atom_init = AtomCustomJSONInitializer(self.data_directory + 'atom_init.json')
         self.max_num_nbr = max_num_nbr
         self.dmin = 0
         self.radius = 8
         self.step = 0.2
+        self.pad_dim = pad_dim
+        self.shuffle = shuffle
+        self.start_idx = start_idx
+        self.end_idx = end_idx
+        
+        self.df = pd.read_csv(data_directory + 'structure-property-data.csv')
+        self.df = self.df[self.df['nsites'] <= pad_dim]
+        self.df = self.df.sample(frac=1, random_state=np.random.seed(9)).reset_index(drop=True)
+        if self.end_idx:
+            self.df = self.df.iloc[self.start_idx:self.end_idx, :]
+
+        self.atom_init = AtomCustomJSONInitializer(self.data_directory + 'atom_init.json')
         self.gdf = GaussianDistance(dmin=self.dmin, dmax=self.radius, step=self.step)
-        self.pad_dim = 50
+        
         self.on_epoch_end()
 
     def __len__(self):
@@ -132,8 +133,10 @@ class CifDataGenerator(Sequence):
         targets = []
 
         for i in indexes:
-            cif_path = self.data_directory + self.df.iloc[i, 0] + '.cif'
-            crystal = Structure.from_file(cif_path)
+            # cif_path = self.data_directory + self.df.iloc[i, 0] + '.cif'
+            # crystal = Structure.from_file(cif_path)
+            crystal = Structure.from_str(self.df['cif'].iloc[i], fmt='cif')
+
             atom_fea = np.vstack([self.atom_init.get_atom_fea(crystal[i].specie.number)
                                         for i in range(len(crystal))])
             all_nbrs = crystal.get_all_neighbors(self.radius, include_index=True)
@@ -143,7 +146,7 @@ class CifDataGenerator(Sequence):
                 if len(nbr) < self.max_num_nbr:
                     warnings.warn('{} not find enough neighbors to build graph. '
                                     'If it happens frequently, consider increase '
-                                    'radius.'.format(cif_id))
+                                    'radius.'.format(self.df['mp_id'].iloc[i]))
                     nbr_fea_idx.append(list(map(lambda x: x[2], nbr)) +
                                         [0] * (self.max_num_nbr - len(nbr)))
                     nbr_fea.append(list(map(lambda x: x[1], nbr)) +
@@ -157,16 +160,24 @@ class CifDataGenerator(Sequence):
             nbr_fea_idx, nbr_fea = np.array(nbr_fea_idx), np.array(nbr_fea)
             nbr_fea = self.gdf.expand(nbr_fea)
 
-            if atom_fea.shape[0] != self.pad_dim:
-                # atom_fea, nbr_fea, nbr_fea_idx, mask = self.pad_features(atom_fea, nbr_fea, nbr_fea_idx)
-                atom_fea, nbr_fea, nbr_fea_idx, mask = self.pad_features_with_n(atom_fea, nbr_fea, nbr_fea_idx, n=128)
-            else:
-                mask = np.ones(shape=(self.pad_dim, nbr_fea_idx.shape[-1], 2*atom_fea.shape[-1]))
-            atomic_features.append(atom_fea)
-            bond_features.append(nbr_fea)
-            atom_neighbour_idxs.append(nbr_fea_idx)
-            masks.append(mask)
-            targets.append(self.df.iloc[i, 1])
+            # if atom_fea.shape[0] != self.pad_dim:
+            #     atom_fea, nbr_fea, nbr_fea_idx, mask = self.pad_features_with_n(atom_fea, nbr_fea, nbr_fea_idx, n=128)
+            # else:
+            #     mask = np.ones(shape=(self.pad_dim, nbr_fea_idx.shape[-1], 2*atom_fea.shape[-1]))
+            
+            # atomic_features.append(atom_fea)
+            # bond_features.append(nbr_fea)
+            # atom_neighbour_idxs.append(nbr_fea_idx)
+            # masks.append(mask)
+            # targets.append(self.df[self.target].iloc[i])
+
+            atom_fea_new, nbr_fea_new, nbr_fea_idx_new, mask_new = self.pad_features_with_n(atom_fea, nbr_fea, nbr_fea_idx, n=128)
+            
+            atomic_features.append(atom_fea_new)
+            bond_features.append(nbr_fea_new)
+            atom_neighbour_idxs.append(nbr_fea_idx_new)
+            masks.append(mask_new)
+            targets.append(self.df[self.target].iloc[i])
 
         atomic_features = np.array(atomic_features, dtype=np.float32)
         bond_features = np.array(bond_features, dtype=np.float32)
@@ -179,7 +190,7 @@ class CifDataGenerator(Sequence):
         if self.shuffle:
             self.df = self.df.sample(frac=1).reset_index(drop=True)
 
-    def pad_features(self, atom_features, bond_features, atom_neighbour_idxs):
+    def pad_features_with_n(self, atom_features, bond_features, atom_neighbour_idxs, n=128):
         n_atoms = atom_features.shape[0]
         n_to_pad = self.pad_dim - n_atoms
 
@@ -190,30 +201,12 @@ class CifDataGenerator(Sequence):
         atom_features = np.concatenate([atom_features, atom_padding], axis=0)
         bond_features = np.concatenate([bond_features, bond_padding], axis=0)
         atom_neighbour_idxs = np.concatenate([atom_neighbour_idxs, idx_padding], axis=0)
-        # compute mask
-        mask_shape = list(atom_neighbour_idxs.shape) + [2*atom_features.shape[-1]]
-        mask_ones = np.ones(shape=(n_atoms, atom_neighbour_idxs.shape[-1], 2*atom_features.shape[-1]))
-        mask_zeros = np.zeros(shape=(n_to_pad, atom_neighbour_idxs.shape[-1], 2*atom_features.shape[-1]))
+
+        mask_shape = list(atom_neighbour_idxs.shape) + [n]
+        mask_ones = np.ones(shape=(n_atoms, atom_neighbour_idxs.shape[-1], n))
+        mask_zeros = np.zeros(shape=(n_to_pad, atom_neighbour_idxs.shape[-1], n))
         mask = np.concatenate([mask_ones, mask_zeros], axis=0)
-        
-        return atom_features, bond_features, atom_neighbour_idxs, mask
-
-    def pad_features_with_n(self, atom_features, bond_features, atom_neighbour_idxs, n=128):
-        n_atoms = atom_features.shape[0]
-        n_to_pad = self.pad_dim - n_atoms
-
-        atom_padding = np.zeros(shape=(n_to_pad, n))
-        bond_padding = np.zeros(shape=(n_to_pad, n, bond_features.shape[2]))
-        idx_padding = np.ones(shape=(n_to_pad, n)) * (self.pad_dim - 1)
-
-        atom_features = np.concatenate([atom_features, atom_padding], axis=0)
-        bond_features = np.concatenate([bond_features, bond_padding], axis=0)
-        atom_neighbour_idxs = np.concatenate([atom_neighbour_idxs, idx_padding], axis=0)
-        # compute mask
-        mask_ones = np.ones(shape=(n_atoms, atom_neighbour_idxs.shape[-1], 2*atom_features.shape[-1]))
-        mask_zeros = np.zeros(shape=(n_to_pad, atom_neighbour_idxs.shape[-1], 2*atom_features.shape[-1]))
-        mask = np.concatenate([mask_ones, mask_zeros], axis=0)
-        
+    
         return atom_features, bond_features, atom_neighbour_idxs, mask
     
     def less_than_n(self, x, n=50):
