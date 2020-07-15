@@ -27,7 +27,7 @@ def pad_features(atom_features, bond_features, atom_neighbour_idxs, pad_dim=50):
     return atom_features, bond_features, atom_neighbour_idxs, mask
 
 
-def evaluate_cgcnn_from_cif(cif, weights, batch_size, atom_init='./cgcnn/atom_init.json', weights_dir='saved_models/cgcnn'):
+def evaluate_cgcnn_from_cif(model, cif, weights, batch_size, atom_init='./cgcnn/atom_init_cjc.json', weights_dir='saved_models/cgcnn'):
 
     atom_init = AtomCustomJSONInitializer(atom_init)
     max_num_nbr = 12
@@ -69,7 +69,7 @@ def evaluate_cgcnn_from_cif(cif, weights, batch_size, atom_init='./cgcnn/atom_in
     nbr_fea = gdf.expand(nbr_fea)
 
     if atom_fea.shape[0] != pad_dim:
-        atom_fea, nbr_fea, nbr_fea_idx, mask = pad_features(atom_fea, nbr_fea, nbr_fea_idx)
+        atom_fea, nbr_fea, nbr_fea_idx, mask = pad_features(atom_fea, nbr_fea, nbr_fea_idx, pad_dim=pad_dim)
     else:
         mask = np.ones(shape=(pad_dim, nbr_fea_idx.shape[-1], 128))
 
@@ -80,7 +80,6 @@ def evaluate_cgcnn_from_cif(cif, weights, batch_size, atom_init='./cgcnn/atom_in
     preds = []
     for prop in weights:
         weights_path = weights_dir + '/cgcnn_weights.' + prop +'.best.hdf5'
-        model = CGCNN(batch_size)
         model.load_weights(weights_path)
         adam = Adam(lr=0.001)
         model.compile(optimizer=adam, loss='mean_squared_error', metrics=['mean_absolute_error'])
@@ -90,7 +89,6 @@ def evaluate_cgcnn_from_cif(cif, weights, batch_size, atom_init='./cgcnn/atom_in
                 'bond_input': nbr_fea, 
                 'atom_n_input': nbr_fea_idx, 
                 'masks_input': mask}
-
         pred = model.predict(data, batch_size=batch_size)
         preds.append(pred)
     return preds

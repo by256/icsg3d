@@ -26,6 +26,7 @@ if __name__ == '__main__':
     parser.add_argument('--lr', metavar='lr', type=float, help='Learning rate', default=3e-6)
     parser.add_argument('--batch_size', metavar='batch_size', type=int, help='Batch size for training', default=10)
     parser.add_argument('--nrot', metavar='nrot', type=int, help='Batch size for training', default=10)
+    parser.add_argument('--nclasses', metavar='nclasses', type=int, help='Number of segmentation classes', default=95)
     parser.add_argument('--split', metavar='split', type=float, help='Train-test split fraction', default=0.8)
     namespace = parser.parse_args()
     
@@ -43,15 +44,19 @@ if __name__ == '__main__':
 
     # Split the data
     training_ids, validation_ids = data_split(path, samples, frac=namespace.split, n_rot=namespace.nrot)
-    print(len(training_ids), len(validation_ids))
-    print(training_ids[-5:], validation_ids[-5:])
     training_generator = UnetDataGenerator(training_ids, data_path=path, batch_size=batch_size, n_channels=input_shape[-1], shuffle=True)
     validation_generator = UnetDataGenerator(validation_ids, data_path=path, batch_size=batch_size, n_channels=input_shape[-1], shuffle=True)
-    class_weights = get_weights(path)
-    class_weights[0] = 0.0
-    print(class_weights)
-    unet = AtomUnet(num_classes=95, class_weights=class_weights, input_shape=input_shape, weights=weights, lr=lr)
+
+    # Calculate class weights from the training set
+    try:
+        class_weights = np.load(weights_dir + '/class_weights.npy')
+    except Exception:
+        class_weights = get_weights(path, training_ids, namespace.nclasses)
+        class_weights[0] = 0.0
+        np.save(weights_dir + '/class_weights.npy', class_weights)
+    
+    unet = AtomUnet(num_classes=namespace.nclasses, class_weights=class_weights, input_shape=input_shape, weights=weights, lr=lr)
 
     # Train
     unet.train_generator(training_generator, validation_generator, epochs=epochs, output_dir=os.path.join('output', 'unet', mode))
-    #unet.save_(weights, 'saved_models/unet/mixed/unet_weights_mixed_full.best.h5')
+    unet.save_(weights, 'saved_models/unet/mixed/unet_weights_mixed_full.best.h5')

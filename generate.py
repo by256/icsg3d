@@ -42,6 +42,7 @@ if __name__ == '__main__':
     parser.add_argument('--beta', metavar='beta', type=int, help='beta', default=90)
     parser.add_argument('--gamma', metavar='gamma', type=int, help='gamma', default=90)
     parser.add_argument('--target', metavar='target', type=str, default='formation_energy_per_atom')
+    parser.add_argument('--ncond', metavar='ncond', type=int, help='Number of condition bins', default=10)
 
     namespace = parser.parse_args()
 
@@ -56,7 +57,7 @@ if __name__ == '__main__':
 
 
     df = pd.read_csv(os.path.join('data', mode, mode+'.csv'))
-    df['interval'] = pd.qcut(df[namespace.target], 10, np.arange(10))
+    df['interval'] = pd.qcut(df[namespace.target], namespace.ncond, np.arange(namespace.ncond))
     training_names = df['pretty_formula'].values
     n_samples = namespace.nsamples
     batch_size = namespace.batch_size
@@ -79,17 +80,6 @@ if __name__ == '__main__':
     unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_'+mode+'.best.hdf5')
     perceptual_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '.best.h5')
 
-
-    if mode == 'mixed':
-        desired_structure = ['ABC2', 'AB', 'ABC3']
-    elif mode == 'cubic_perovskites':
-        desired_structure = ['ABC3']
-    elif mode == 'cubic_binaries':
-        desired_structure = ['AB']
-    elif mode == 'hesuler':
-        desired_structure = ['ABC2']
-
-
     alpha=namespace.alpha
     beta=namespace.beta
     gamma=namespace.gamma
@@ -107,6 +97,9 @@ if __name__ == '__main__':
 
     # Load Unet
     unet = AtomUnet(weights=unet_weights)
+
+    # Load CGCNN
+    cgcnn = CGCNN(batch_size=1)
 
     # Load the M, C, cond of the base compound
     M_base = np.load(os.path.join(path, 'density_matrices', base_compound + '.npy')).reshape(1,32,32,32,1)
@@ -181,13 +174,13 @@ if __name__ == '__main__':
             
             property_predictions = {}
             for prop in properties:
-                property_pred = evaluate_cgcnn_from_cif(filename, weights=[prop], batch_size=1)
+                property_pred = evaluate_cgcnn_from_cif(cgcnn, filename, weights=[prop], batch_size=1)
                 property_predictions[prop] = property_pred[0][0][0]
                 rd[prop] = property_pred[0][0][0]
             
             rd['target_diff_pct'] = np.abs((rd[namespace.target] - base_target_value)/base_target_value)
             rd['electronegativity'] = comp.average_electroneg
-            rd['charge balanced'] = 1 if comp.oxi_state_guesses() else 0
+            rd['charge balanced'] = 1 if comp.oxi_state_guesses(all_oxi_states=True) else 0
             rd['cif'] = filename
 
             results.append(rd)

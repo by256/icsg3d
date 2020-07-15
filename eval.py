@@ -49,6 +49,7 @@ if __name__ == '__main__':
     parser.add_argument('--samples', metavar='samples', type=int, help='Number of samples', default=78750)
     parser.add_argument('--eps_frac', metavar='eps_frac', type=float, help='Eps of lattice vector', default=0.25)
     parser.add_argument('--ncond', metavar='ncond', type=int, help='Number of condition bins', default=10)
+    parser.add_argument('--clus_iters', metavar='clus_iters', type=int, help='Number of iterations for watershed clustering', default=5)
     parser.add_argument('--split', metavar='split', type=float, help='Train-test split fraction', default=0.8)
     namespace = parser.parse_args()
 
@@ -64,7 +65,7 @@ if __name__ == '__main__':
     vae_weights = os.path.join('saved_models', 'vae', mode, 'vae_weights_'+mode+'.best.hdf5')
     unet_weights = os.path.join('saved_models', 'unet', mode, 'unet_weights_'+mode+'.best.hdf5')
     perceptual_model = os.path.join('saved_models', 'unet', mode, 'unet_weights_' + mode + '.best.h5')
-    clustering_max_iters = 5
+    clustering_max_iters = namespace.clus_iters
 
     os.makedirs(os.path.join('output', 'eval', mode), exist_ok=True)
 

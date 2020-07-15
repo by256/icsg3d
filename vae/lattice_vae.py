@@ -48,6 +48,24 @@ def sampling(args):
 
 
 class LatticeDFCVAE():
+    """
+    Conditional Variational Auto-encoder with a deep feature consistent model
+
+    params:
+    input_shape: Dimensions of the density matrix inputs, default (32,32,32,4)
+    kernel_size: kernel dim for Conv3D layers
+    pool_size: max pool dimensions
+    filters: Number of filters at each conv layer
+    latent_dim: size of bottleneck
+    beta: Weighting of KLD loss term
+    alpha: Weightin of DFC loss term
+    perceptual_model: Path to pre-trained Unet model (.h5)
+    pm_layers: Which layers to use of unet for DFC calcs
+    pm_layer_Weights: Weights of each DFC layer
+    cond_shape: Dimension of condition vector
+    custom_objects: Losses and metrics for the unet
+
+    """
 
     def __init__(self,
                  input_shape=(32,32,32,4),
@@ -62,8 +80,7 @@ class LatticeDFCVAE():
                  pm_layers=['re_lu_2', 're_lu_4', 're_lu_6', 're_lu_8'],
                  pm_layer_weights=[1.0, 1.0, 1.0, 1.0],
                  cond_shape=10,
-                 custom_objects=custom_objects,
-                 condition=True):
+                 custom_objects=custom_objects):
         self.input_shape=input_shape
         self.kernel_size = kernel_size
         self.pool_size = pool_size
@@ -76,7 +93,6 @@ class LatticeDFCVAE():
         self.batch_size = None
         self.cond_shape = cond_shape
         self.losses = []
-        self.condition = condition
 
         self.pm = load_model(perceptual_model, custom_objects=custom_objects)
         self.pm_layers = pm_layers
@@ -90,15 +106,10 @@ class LatticeDFCVAE():
         self.decoder = self.build_decoder()
 
         M_input = Input(batch_shape=(self.batch_size,) + self.input_shape)
-        if self.condition:
-            cond_input = Input(batch_shape=(self.batch_size,self.cond_shape))
-            z_mean, z_log_var, z = self.encoder([M_input, cond_input])
-            reconstructed = self.decoder([z, cond_input])
-            self.model = Model(inputs=[M_input, cond_input], outputs=reconstructed)
-        else:
-            z_mean, z_log_var, z = self.encoder(M_input)
-            reconstructed = self.decoder(z)
-            self.model = Model(inputs=M_input, outputs=reconstructed)
+        cond_input = Input(batch_shape=(self.batch_size,self.cond_shape))
+        z_mean, z_log_var, z = self.encoder([M_input, cond_input])
+        reconstructed = self.decoder([z, cond_input])
+        self.model = Model(inputs=[M_input, cond_input], outputs=reconstructed)
 
         self.z = z
         self.z_mean = z_mean
@@ -120,15 +131,16 @@ class LatticeDFCVAE():
         return
 
     def build_encoder(self):
-        M_input = Input(batch_shape=(self.batch_size,) + self.input_shape)
-        if self.condition:
-            cond_input = Input(batch_shape=(self.batch_size, self.cond_shape))
-            cond = Reshape((1,1,1, self.cond_shape))(cond_input)
-            cond = Lambda(K.tile, arguments={'n': self.input_shape})(cond)
+        """
+        Encoder model
+        """
 
-            x = Concatenate()([M_input, cond])
-        else:
-            x = M_input
+        M_input = Input(batch_shape=(self.batch_size,) + self.input_shape)
+        cond_input = Input(batch_shape=(self.batch_size, self.cond_shape))
+        cond = Reshape((1,1,1, self.cond_shape))(cond_input)
+        cond = Lambda(K.tile, arguments={'n': self.input_shape})(cond)
+        x = Concatenate()([M_input, cond])
+
         for i in range(len(self.filters)):
             f = self.filters[i]
             x = Conv3D(filters=f,
@@ -152,25 +164,19 @@ class LatticeDFCVAE():
         z = Lambda(sampling, output_shape=(self.latent_dim,), name='z')([z_mean, z_log_var])
 
         # instantiate encoder model
-        if self.condition:
-            encoder = Model([M_input, cond_input], [z_mean, z_log_var, z], name='encoder')
-        else:
-            encoder = Model(M_input, [z_mean, z_log_var, z], name='encoder')
-
-        # print(encoder.summary())
+        encoder = Model([M_input, cond_input], [z_mean, z_log_var, z], name='encoder')
         return encoder
 
     def build_decoder(self):
-        latent_inputs = Input(batch_shape=(self.batch_size, self.latent_dim), name='decoder_input')  # (None, 256)
-        if self.condition:
-            cond_inputs = Input(batch_shape=(self.batch_size, self.cond_shape))
+        """
+        Decoder model
+        """
 
-            #concatenate the condition
-            z_cond = Concatenate()([latent_inputs, cond_inputs])
-            x = Dense(self.latent_dim)(z_cond)
-        else:
-            x = Dense(self.latent_dim)(latent_inputs)
-        
+        latent_inputs = Input(batch_shape=(self.batch_size, self.latent_dim), name='decoder_input')  # (None, 256)
+        cond_inputs = Input(batch_shape=(self.batch_size, self.cond_shape))
+        #concatenate the condition
+        z_cond = Concatenate()([latent_inputs, cond_inputs])
+        x = Dense(self.latent_dim)(z_cond)
         x = Reshape((4,4,4,4))(x)
 
         for i in range(len(self.filters)):
@@ -191,11 +197,7 @@ class LatticeDFCVAE():
         outputs = ReLU()(outputs)
 
         # instantiate decoder model
-        if self.condition:
-            decoder = Model([latent_inputs, cond_inputs], outputs, name='decoder')
-        else:
-            decoder = Model(latent_inputs, outputs, name='decoder')
-        # print(decoder.summary())
+        decoder = Model([latent_inputs, cond_inputs], outputs, name='decoder')
         return decoder
     
     def mse_loss(self, inputs, outputs):
@@ -206,14 +208,9 @@ class LatticeDFCVAE():
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
         return kl_loss
-    
-    def _vanilla_vae_loss(self, x, t_decoded):
-        rs_loss = self.mse_loss(x, t_decoded)
-        kl_loss = self.kld_loss()
-
-        return K.mean(rs_loss + (self.beta * kl_loss))
 
     def _vae_dfc_loss(self, alpha, beta):
+        """ Combined loss function """
 
         alpha = K.variable(alpha)
         beta = K.variable(beta)
@@ -227,6 +224,8 @@ class LatticeDFCVAE():
         return loss
     
     def perceptual_loss(self, y_true, y_pred):
+        """ Perceptual model loss """
+
         outputs = [self.pm.get_layer(l).output for l in self.pm_layers]
         model = Model(self.pm.input, outputs)
         h1_list = model(y_true)
@@ -260,10 +259,7 @@ class LatticeDFCVAE():
             train_metrics = []
             for batch_idx in range(train_steps_per_epoch):
                 train_batch, train_cond = train_gen[batch_idx]
-                if self.condition:
-                    batch_metrics = self.model.train_on_batch([train_batch, train_cond], train_batch)
-                else:
-                    batch_metrics = self.model.train_on_batch(train_batch, train_batch)
+                batch_metrics = self.model.train_on_batch([train_batch, train_cond], train_batch)
 
                 train_metrics.append(np.array(list(batch_metrics)))
             train_metrics = np.mean(train_metrics, axis=0)
@@ -272,10 +268,7 @@ class LatticeDFCVAE():
             val_metrics = []
             for batch_idx in range(val_steps_per_epoch):
                 val_batch, val_cond = val_gen[batch_idx]
-                if self.condition:
-                    batch_metrics = self.model.test_on_batch([val_batch, val_cond], val_batch)
-                else:
-                    batch_metrics = self.model.test_on_batch(val_batch, val_batch)
+                batch_metrics = self.model.test_on_batch([val_batch, val_cond], val_batch)
                 val_metrics.append(np.array(list(batch_metrics)))
             val_metrics = np.mean(val_metrics, axis=0)
             t1 = time.time()
@@ -294,7 +287,6 @@ class LatticeDFCVAE():
                 best_loss = epoch_val_loss
                 self.plot_reconstructions(val_gen, epoch=e, name='output/vae/vae_reconstructions_best.png')
                 self.plot_samples(self.batch_size, epoch=e, name='output/vae/vae_samples_best.png')
-                self.plot_tsne(val_gen, epoch=e, name='output/vae/tsne_best.png')
                 self.plot_kde(val_gen, epoch=e, name='output/vae/kde_best.png')
                 print("Saving Model")
                 self.model.save_weights(self.filepath)
@@ -308,16 +300,13 @@ class LatticeDFCVAE():
         return
     
     def sample_vae(self, n_samples, cond=None, var=1.0):
-        if cond is None and self.condition:
+        if cond is None:
             cond = np.random.randint(low=0, high=self.cond_shape, size=n_samples)
-        if self.condition:
-            cond_tensor = to_categorical(cond, num_classes=self.cond_shape)
-            cond_tensor = np.tile(cond_tensor, (n_samples, 1))
+
+        cond_tensor = to_categorical(cond, num_classes=self.cond_shape)
+        cond_tensor = np.tile(cond_tensor, (n_samples, 1))
         z_sample = np.random.normal(0, var, size=(n_samples, self.latent_dim))
-        if self.condition:
-            output = self.decoder.predict([z_sample, cond_tensor])
-        else:
-            output = self.decoder.predict(z_sample)
+        output = self.decoder.predict([z_sample, cond_tensor])
         return z_sample, output
 
     def plot_samples(self, n_samples=20, epoch=0, name=None):
@@ -364,44 +353,6 @@ class LatticeDFCVAE():
         plt.tight_layout()
         plt.savefig(name)
         plt.close()
-        return
-    
-    def plot_tsne(self, val_gen, epoch, name=None, maxz=100):
-        z = []
-        Ms = []
-        # Real samples
-        for M, p in val_gen:
-            if self.condition:
-                _,_,z_m = self.encoder.predict([M, p])
-            else:
-                _,_,z_m = self.encoder.predict(M)
-            for i, iz in enumerate(z_m):
-                z.append(iz)
-                Ms.append(M[i,:,:,16,0])
-            if len(z) >= maxz:
-                break
-        z = np.array(z)
-        n_real = len(z)
-
-        # add some generated ones
-        z_samples, M_samples = self.sample_vae(self.batch_size, None)  #(100, 256), (100, 32,32,32,4)
-        M_samples = M_samples[:, :,:,16,0]
-        Ms = np.array(Ms)
-
-        z = np.concatenate([z, z_samples], axis=0)
-        Ms = np.concatenate([Ms, M_samples], axis=0)
-
-        tsne = TSNE(n_components=2)
-        embedded = tsne.fit_transform(z)
-
-        fig, ax = plt.subplots(1,1)
-        ax.scatter(embedded[:n_real, 0], embedded[:n_real, 1], label='real')
-        ax.scatter(embedded[n_real:, 0], embedded[n_real:, 1], marker='x', label='fake')
-        ax.legend()
-        plt.show(block=True)
-        plt.savefig(name)
-        plt.close()
-
         return
     
     def plot_kde(self, val_gen, epoch, name=None, maxz=1000):

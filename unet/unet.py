@@ -191,6 +191,16 @@ def weighted_categorical_crossentropy(weights):
     return loss
 
 class AtomUnet():
+    """
+    Unet for semantic segmentation of electron density maps
+    Params:
+    num_classes: Number of distinct elements, including 0 class for background
+    class_weights: The loss weights for each class
+    weights: model_weights save file
+    input_shape: Shape of electron density map input
+    lr: Learning rate
+    """
+
     def __init__(self, num_classes=95, class_weights=None, weights=None, input_shape=(32,32,32,4), lr=1e-6):
         self.class_weights = class_weights
         self.input_shape = input_shape
@@ -308,7 +318,7 @@ class AtomUnet():
     
     def train_generator(self, train_gen, val_gen, epochs=100, output_dir='output/unet/'):
         print("Training...")
-        checkpoint1 = ModelCheckpoint(self.filepath, monitor='val_soft_loss', verbose=1, save_best_only=True, mode='min')
+        checkpoint1 = ModelCheckpoint(self.filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
         plotter = TrainingPlot(val_gen, output_dir)
         callbacks_list = [checkpoint1, plotter]
         self.model.fit_generator(generator=train_gen,

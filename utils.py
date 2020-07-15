@@ -25,17 +25,17 @@ from sklearn.cluster import KMeans
 warnings.filterwarnings('ignore')
 
 def data_split(path, n=None, frac=0.80, n_rot=10, shuffle=True, seed=28):
-    """ Train-test split of the data """
     training_ids = []
     validation_ids = []
-    data_ids = sorted([x for x in os.listdir(path + '/density_matrices') if x.endswith('.npy')])[:n]
-    data_ids_plain = [x for x in data_ids if '_rot_' not in x]
+    data_ids = sorted([x for x in os.listdir(path + '/density_matrices') if x.endswith('.npy')])
+    data_ids_plain = [x for x in data_ids if not '_rot_' in x][:n]
     if shuffle:
         if seed is not None:
             random.seed(seed)
         random.shuffle(data_ids_plain)
     training_ids_plain = data_ids_plain[:int(frac*len(data_ids_plain))]
     validation_ids_plain = data_ids_plain[int(frac*len(data_ids_plain)):]
+    assert(list(set(training_ids_plain) & set(validation_ids_plain)) == [])
     for i in training_ids_plain:
         training_ids.append(i)
         for r in range(n_rot):
@@ -44,6 +44,7 @@ def data_split(path, n=None, frac=0.80, n_rot=10, shuffle=True, seed=28):
         validation_ids.append(i)
         for r in range(n_rot):
             validation_ids.append(i.strip('.npy') + '_rot_' + str(r) + '.npy')
+    assert(list(set(training_ids) & set(validation_ids)) == [])
     return training_ids, validation_ids
 
 
@@ -142,9 +143,18 @@ def create_crystal(cifpath, primitive=False):
 def to_lattice_params(p, eps_frac=0.25, d=32, axis=(-3,-2,-1)):
     """ Convert a density matrix to lattice params """
     batch = len(p)
-    ap = ((np.max(p[:,:,:,:,0], axis=axis) - np.min(p[:,:,:,:,0], axis=axis))/(1 + 2*eps_frac))/(1-1.0/d)  #(batch, 1)
-    bp = ((np.max(p[:,:,:,:,1], axis=axis) - np.min(p[:,:,:,:,1], axis=axis))/(1 + 2*eps_frac))/(1-1.0/d)
-    cp = ((np.max(p[:,:,:,:,2], axis=axis) - np.min(p[:,:,:,:,2], axis=axis))/(1 + 2*eps_frac))/(1-1.0/d)
+    ap = (np.max(p[:,:,:,:,0], axis=axis) - np.min(p[:,:,:,:,0], axis=axis))
+    ap = ap/(1 + 2*eps_frac)
+    ap = ap/(1-1.0/d)
+    bp = (np.max(p[:,:,:,:,1], axis=axis) - np.min(p[:,:,:,:,1], axis=axis))
+    bp = bp/(1 + 2*eps_frac)
+    bp = bp/(1-1.0/d)
+    cp = (np.max(p[:,:,:,:,2], axis=axis) - np.min(p[:,:,:,:,2], axis=axis))
+    cp = cp/(1 + 2*eps_frac)
+    cp = cp/(1-1.0/d)
+    ap -= ap/d
+    bp -= bp/d
+    cp -= cp/d
     lp = np.concatenate([ap.reshape(batch, 1),bp.reshape(batch, 1),cp.reshape(batch, 1)], axis=-1)
     return lp
 

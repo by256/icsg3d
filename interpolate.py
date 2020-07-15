@@ -105,7 +105,6 @@ if __name__ == '__main__':
 
     df = pd.read_csv(csv_path)
     df['bin'] = pd.qcut(df[target], namespace.ncond, np.arange(namespace.ncond)).astype(int)
-    df = df[df['nsites'] <= 40]
 
     vae = LatticeDFCVAE(perceptual_model=unet_model, cond_shape=namespace.ncond)
     vae._set_model(weights=vae_weights, batch_size=20)
