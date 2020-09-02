@@ -121,8 +121,6 @@ def CGCNN(batch_size):
 
     x = Dense(64)(atom_features)
     x = CrystalGraphConv(64, 41)([x, bond_features, atom_neighbour_idxs, masks])
-    x = CrystalGraphConv(64, 41)([x, bond_features, atom_neighbour_idxs, masks])
-    x = CrystalGraphConv(64, 41)([x, bond_features, atom_neighbour_idxs, masks])
     x = MeanPooling(activation='softplus')(x)
     x = Dense(128, activation='softplus')(x)
     out = Dense(1)(x)
