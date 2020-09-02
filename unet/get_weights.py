@@ -1,7 +1,18 @@
 """
-ICSG3D/unet/get_weights.py
-Function for calculating the class weights for the UNet loss
+## Compute class weights for the Unet loss function
+## Each class is weighted inversely proportional to its frequency in the trainin set.
+## Zerp class is always set to zero due to imbalance
+--------------------------------------------------
+## Author: Callum J. Court.
+## Email: cc889@cam.ac.uk
+## Version: 1.0.0
+--------------------------------------------------
+## License: MIT
+## Copyright: Copyright Callum Court & Batuhan Yildirim 2020, ICSG3D
+-------------------------------------------------
 """
+
+
 import numpy as np
 import os
 

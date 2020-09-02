@@ -1,8 +1,18 @@
 """
-ICSG3D/query_matproj,py
-Script for querying CIFs from the materials project
-Requires a valid API key
+## Script for Querying structures from the MaterialsProject API
+## Further docs available at: https://materialsproject.org/open
+## Requires API Key from the Materials Project
+## Search is conducted using the MPRester, based on anonymous_formula and crystal system
+--------------------------------------------------
+## Author: Callum J. Court.
+## Email: cc889@cam.ac.uk
+## Version: 1.0.0
+--------------------------------------------------
+## License: MIT
+## Copyright: Copyright Callum Court & Batuhan Yildirim 2020, ICSG3D
+-------------------------------------------------
 """
+
 import argparse
 import json
 import os
@@ -10,7 +20,7 @@ import os
 from pymatgen.ext.matproj import MPRester
 
 if __name__ == '__main__':
-
+    # Arguments
     parser = argparse.ArgumentParser(description="Query materialsproject API and download CIFs for all structures")
     parser.add_argument('--key', metavar='key', type=str, help='Matrials Project API key')
     parser.add_argument('--name', metavar='name', type=str, help='Name of the query')
@@ -25,7 +35,20 @@ if __name__ == '__main__':
     af += ']}'
     cs = ", 'crystal_system': '" +namespace.system+"'" if namespace.system else ''
     query = eval("{" + af + cs + "}")
-    fields = ['task_id', 'pretty_formula', 'formation_energy_per_atom', 'cif', 'band_gap', 'diel.poly_electronic', 'diel.refractive_index', 'piezo.eij_max', 'energy_per_atom', 'elasticity.K_Voigt_Reuss_Hill', 'elasticity.G_Voigt_Reuss_Hill', 'elasticity.poisson_ratio', 'nsites']
+    fields = [
+        'task_id', 
+        'pretty_formula', 
+        'formation_energy_per_atom', 
+        'cif', 
+        'band_gap', 
+        'diel.poly_electronic', 
+        'diel.refractive_index', 
+        'piezo.eij_max', 
+        'energy_per_atom', 
+        'elasticity.K_Voigt_Reuss_Hill', 
+        'elasticity.G_Voigt_Reuss_Hill', 
+        'elasticity.poisson_ratio', 
+        'nsites']
     
     os.makedirs(save_dir, exist_ok=True)
     os.makedirs(os.path.join(save_dir, 'cifs'), exist_ok=True)

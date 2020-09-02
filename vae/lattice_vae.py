@@ -1,6 +1,16 @@
 """
-ICSG3D/vae/lattice_vae.py
-Conditional Deep Feature Consistent Variational Autoencoder"""
+## Conditional Deep Feature Consistent VAE model
+--------------------------------------------------
+## Author: Callum J. Court.
+## Email: cc889@cam.ac.uk
+## Version: 1.0.0
+--------------------------------------------------
+## License: MIT
+## Copyright: Copyright Callum Court & Batuhan Yildirim 2020, ICSG3D
+-------------------------------------------------
+"""
+
+
 
 import argparse
 import os
@@ -10,7 +20,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
-import tensorflow as tf
 from keras import backend as K
 from keras.callbacks import Callback, ModelCheckpoint
 from keras.datasets import mnist
@@ -24,6 +33,7 @@ from keras.optimizers import Adam
 from keras.utils import Sequence, plot_model, to_categorical
 from sklearn.manifold import TSNE
 
+import tensorflow as tf
 from unet.unet import custom_objects
 from viz import imscatter, viz
 

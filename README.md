@@ -2,7 +2,7 @@
 
 !['TOC'](images/toc.png)
 
-A deep learning pipeline for generation of 3D crystal structures and prediction of their properties. All source code and images are associated with the paper [3-D Inorganic Crystal Structure Generation and Property Prediction via Representation Learning]()
+A deep learning pipeline for generation of 3D crystal structures and prediction of their properties. All source code and images are associated with the paper [3-D Inorganic Crystal Structure Generation and Property Prediction via Representation Learning](https://pubs.acs.org/doi/10.1021/acs.jcim.0c00464)
 ![Example crystals generated with our system](images/crystals-1.png)
 
 Representation learning of crystal structures

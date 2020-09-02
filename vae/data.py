@@ -1,6 +1,16 @@
 """
-ICSG3D/vae/data.py
-Data generation classes for the VAE"""
+## VAE Data generator
+--------------------------------------------------
+## Author: Callum J. Court.
+## Email: cc889@cam.ac.uk
+## Version: 1.0.0
+--------------------------------------------------
+## License: MIT
+## Copyright: Copyright Callum Court & Batuhan Yildirim 2020, ICSG3D
+-------------------------------------------------
+"""
+
+
 
 import os
 import re
@@ -11,7 +21,7 @@ from keras.utils import Sequence, to_categorical
 
 
 class VAEDataGenerator(Sequence):
-    'Generates data for Keras'
+    """Generates VAE data based on a list of mp ids"""
     def __init__(self, list_IDs, data_path, batch_size=2, dim=(32,32,32), n_channels=4,
                  n_classes=95, shuffle=False, property_csv='property.csv', n_bins=10, target='formation_energy_per_atom', return_S=False):
         'Initialization'
@@ -68,7 +78,7 @@ class VAEDataGenerator(Sequence):
             M[i,] = self.create_lattice_meshgrid(ID, channels=self.n_channels)
             cond[i,] = self.property_to_categorical(ID)
             if self.return_S:
-                S[i,] = np.load(os.path.join(self.data_path, 'species_matrices', ID)).reshape(1,32,32,32,1)
+                S[i,] = np.load(os.path.join(self.data_path, 'species_matrices', ID)).reshape(1,*self.dim,1)
                 S_b[i,] = np.where(S[i,] != 0, 1, 0)
         if self.return_S:
             return M, [cond, to_categorical(S, num_classes=self.n_classes), S_b]
@@ -81,10 +91,10 @@ class VAEDataGenerator(Sequence):
         return to_categorical(bin_num, num_classes=self.n_bins)
 
     def create_lattice_meshgrid(self, ID, channels=4):
-        M = np.load(os.path.join(self.data_path, 'density_matrices', ID)).reshape(1,32,32,32,1)
+        M = np.load(os.path.join(self.data_path, 'density_matrices', ID)).reshape(1,*self.dim,1)
         if channels == 1:
             return M
         else:
-            p = np.load(os.path.join(self.data_path, 'coordinate_grids', ID)).reshape(1,32,32,32,3)
+            p = np.load(os.path.join(self.data_path, 'coordinate_grids', ID)).reshape(1,*self.dim,3)
             M_L_grid = np.concatenate((M, p), axis=-1)
             return M_L_grid
