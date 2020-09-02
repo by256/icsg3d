@@ -1,3 +1,15 @@
+"""
+## Train the CGCNN model
+--------------------------------------------------
+## Author: Batuhan Yildirim
+## Email: by256@cam.ac.uk
+## Version: 1.0
+--------------------------------------------------
+## License: MIT
+## Copyright: Copyright Callum Court & Batuhan Yildirim 2020, ICSG3D
+-------------------------------------------------
+"""
+
 import warnings
 warnings.filterwarnings('ignore')
 import os
