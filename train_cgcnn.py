@@ -11,7 +11,7 @@ import argparse
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', metavar='data_dir', default='data/cgcnn_cifs', type=str, help='Path to cif files')
+    parser.add_argument('--data_dir', metavar='data_dir', default='./cgcnn/', type=str, help='Path to file containing data')
     parser.add_argument('--batch_size', metavar='batch_size', default=32, type=int, help='Batch size')
     parser.add_argument('--ntrain', metavar='ntrain', default=16384, type=int, help='Number of training samples')
     parser.add_argument('--nval', metavar='nval', default=2048, type=int, help='Number of validation samples')
