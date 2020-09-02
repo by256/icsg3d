@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings('ignore')
 import json
 import numpy as np
 import pandas as pd
@@ -133,8 +135,6 @@ class CifDataGenerator(Sequence):
         targets = []
 
         for i in indexes:
-            # cif_path = self.data_directory + self.df.iloc[i, 0] + '.cif'
-            # crystal = Structure.from_file(cif_path)
             crystal = Structure.from_str(self.df['cif'].iloc[i], fmt='cif')
 
             atom_fea = np.vstack([self.atom_init.get_atom_fea(crystal[i].specie.number)
@@ -150,7 +150,7 @@ class CifDataGenerator(Sequence):
                     nbr_fea_idx.append(list(map(lambda x: x[2], nbr)) +
                                         [0] * (self.max_num_nbr - len(nbr)))
                     nbr_fea.append(list(map(lambda x: x[1], nbr)) +
-                                    [radius + 1.] * (self.max_num_nbr -
+                                    [self.radius + 1.] * (self.max_num_nbr -
                                                             len(nbr)))
                 else:
                     nbr_fea_idx.append(list(map(lambda x: x[2],
@@ -159,17 +159,6 @@ class CifDataGenerator(Sequence):
                                             nbr[:self.max_num_nbr])))
             nbr_fea_idx, nbr_fea = np.array(nbr_fea_idx), np.array(nbr_fea)
             nbr_fea = self.gdf.expand(nbr_fea)
-
-            # if atom_fea.shape[0] != self.pad_dim:
-            #     atom_fea, nbr_fea, nbr_fea_idx, mask = self.pad_features_with_n(atom_fea, nbr_fea, nbr_fea_idx, n=128)
-            # else:
-            #     mask = np.ones(shape=(self.pad_dim, nbr_fea_idx.shape[-1], 2*atom_fea.shape[-1]))
-            
-            # atomic_features.append(atom_fea)
-            # bond_features.append(nbr_fea)
-            # atom_neighbour_idxs.append(nbr_fea_idx)
-            # masks.append(mask)
-            # targets.append(self.df[self.target].iloc[i])
 
             atom_fea_new, nbr_fea_new, nbr_fea_idx_new, mask_new = self.pad_features_with_n(atom_fea, nbr_fea, nbr_fea_idx, n=128)
             

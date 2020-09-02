@@ -114,7 +114,7 @@ class MeanPooling(Layer):
 
 
 def CGCNN(batch_size):
-    atom_features = Input(batch_shape=(batch_size, 50, 92), name='atom_input')
+    atom_features = Input(batch_shape=(batch_size, 50, 93), name='atom_input')
     bond_features = Input(batch_shape=(batch_size, 50, 12, 41), name='bond_input')
     atom_neighbour_idxs = Input(batch_shape=(batch_size, 50, 12), name='atom_n_input', dtype='int32')
     masks = Input(batch_shape=(batch_size, 50, 12, 128), name='masks_input', dtype='int32')
