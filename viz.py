@@ -25,7 +25,6 @@ from sklearn.manifold import TSNE
 
 import cv2
 
-
 def explode(data):
     shape_arr = np.array(data.shape)
     size = shape_arr[:3] * 2 - 1

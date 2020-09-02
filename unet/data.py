@@ -18,8 +18,6 @@ from keras.utils import Sequence, to_categorical
 
 
 class UnetDataGenerator(Sequence):
-    "Generates data for the Unet based on a list of MP ids"
-
     def __init__(
         self,
         list_IDs,
@@ -91,9 +89,7 @@ class UnetDataGenerator(Sequence):
         return X, to_categorical(y, num_classes=self.n_classes), B
 
     def create_lattice_meshgrid(self, ID, channels=4):
-        M = np.load(os.path.join(self.data_path, "density_matrices", ID)).reshape(
-            1, *self.dim, 1
-        )
+        M = np.load(os.path.join(self.data_path, "density_matrices", ID)).reshape(1, *self.dim, 1)
         if channels == 1:
             return M
         else:
