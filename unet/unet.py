@@ -124,7 +124,6 @@ class TrainingPlot(Callback):
         plt.savefig(name)
         plt.close()
         return
-
     def plot_binary(self, epoch, logs={}, name=None):
         fig1, axes1 = plt.subplots(10, 2)
         ax = 0
@@ -157,7 +156,6 @@ class TrainingPlot(Callback):
         plt.close()
         return
 
-
 def r_m(y_true, y_pred):
     """
     Computes the average per-column recall metric
@@ -187,7 +185,6 @@ def p_m(y_true, y_pred):
     predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
     precision = true_positives / (predicted_positives + K.epsilon())
     return precision
-
 
 def f1_m(y_true, y_pred):
     """ F1-score metric"""

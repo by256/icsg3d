@@ -25,7 +25,6 @@ def get_background(S, kernel_size=1):
     kernel = morphology.ball(kernel_size)
     return morphology.dilation(S, kernel)
 
-
 def get_foreground(S, kernel_size=1, erode=True):
     if not erode:
         return S
@@ -76,7 +75,6 @@ def segment_nuclei(
         species_cl = np.where(labels == cl, species, 0)
         region = measure.regionprops(binary_cl, intensity_cl)
         bbox = region[0].bbox
-
         binary_bbox = crop(binary_cl, bbox)
         intensity_bbox = crop(intensity_cl, bbox)
         species_bbox = crop(species_cl, bbox)
@@ -100,7 +98,6 @@ def segment_nuclei(
         fg = get_foreground(binary_bbox)
         bg = get_background(binary_bbox)
         unknown = bg - fg
-
         if verbose:
             print("Segmenting")
             plot_points_3d(fg)
@@ -163,13 +160,11 @@ def majority_vote(seg_img, R, cl):
     binary_label_map = np.where(R == cl, seg_img, 0).astype(int)
     if np.count_nonzero(binary_label_map) == 0:
         return 0
-
     unique, counts = np.unique(binary_label_map, return_counts=True)
     unique_counts = sorted(list(zip(unique, counts)), key=lambda x: x[1])
     unique_counts = [i for i in unique_counts if i[0] != 0]
     specie = unique_counts[-1][0]
     return specie
-
 
 def centroids(seg_img, R):
     """ Determine centroid of a region R in segmented image """

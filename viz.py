@@ -33,7 +33,6 @@ def explode(data):
     exploded[::2, ::2, ::2] = data
     return exploded
 
-
 def expand_coordinates(indices):
     x, y, z = indices
     x[1::2, :, :] += 1
@@ -106,7 +105,6 @@ def viz_duo(x_sample, y_sample, name="test.png", show=True, alpha=0.2):
         plt.show()
     plt.close()
 
-
 def animate(m, s, d=32):
     print(m.shape, s.shape)
     plt.ion()
@@ -145,7 +143,6 @@ def animate_numeric(m, s, d=32):
         axes[1].set_xlim(0, d)
         axes[0].set_ylim(0, d)
         axes[1].set_ylim(0, d)
-
         input()
     plt.close()
     return
@@ -158,7 +155,6 @@ def viz_slice(x, d):
     plt.show()
     plt.close()
     return
-
 
 def imscatter(x, y, ax, imageData, zoom=1.0, frame=True):
     images = []

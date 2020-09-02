@@ -218,7 +218,6 @@ if __name__ == "__main__":
             pred_species.append(np.unique(species))
 
             c += 1
-
     true_num_atoms = np.array(true_num_atoms)
     pred_num_atoms = np.array(pred_num_atoms)
     true_lc = np.array(true_lc)

@@ -146,7 +146,6 @@ def density_matrix(
     M = m.reshape((dims[0], dims[1], dims[2]))
     return M, S
 
-
 @func_set_timeout(120)
 def create_crystal(cifpath, primitive=False):
     """ Convert cif to pymatgen struture """
