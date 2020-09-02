@@ -90,7 +90,4 @@ Attempt to generate 1000 new samples arund a base compound CeCrO3 with variance 
 This will create a new directory where you will find Cifs, density matrices, species matrices and properties for all generated compounds.
 
 ## Citation
-C. J. Court, B. Yildirim, A. Jain, J. M. Cole, "3-D Inorganic Crystal
-Structure Generation
-and Property Prediction via Representation Learning", J. Chem. Inf.
-Model. (accepted for publication).
+C. J. Court, B. Yildirim, A. Jain, J. M. Cole, "3-D Inorganic Crystal Structure Generation and Property Prediction via Representation Learning", *J. Chem. Inf. Model.* (accepted for publication).
