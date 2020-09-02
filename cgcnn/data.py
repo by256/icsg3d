@@ -1,3 +1,18 @@
+"""
+## This contains all the code necessary to create a crystal graph from a CIF, 
+## as well as data generators for the Keras models.
+## Much of this code was adapted from https://github.com/txie-93
+## Credit to Tian Xie.
+--------------------------------------------------
+## Author: Batuhan Yildirim
+## Email: by256@cam.ac.uk
+## Version: 1.0
+--------------------------------------------------
+## License: MIT
+## Copyright: Copyright Callum Court & Batuhan Yildirim 2020, ICSG3D
+-------------------------------------------------
+"""
+
 import warnings
 warnings.filterwarnings('ignore')
 import json
@@ -98,7 +113,38 @@ class GaussianDistance:
 
 
 class CifDataGenerator(Sequence):
+    """
+    Data generator for CGCNN model.
+    """
     def __init__(self, data_directory, target, batch_size=64, max_num_nbr=12, dmin=0, radius=8, step=0.2, pad_dim=50, shuffle=True, start_idx=None, end_idx=None):
+        """
+        Parameters
+        ----------
+        data_directory : str
+            Directory where data files are.
+        target : str
+            Target property name (e.g formation_energy_per_atom)
+        batch_size : int
+            Batch size to use when generating data 
+        max_num_nbr : int
+            Maximum number of neighbours for each node (atom) in the graph.
+        dmin : float
+            Minimum interatomic distance
+        dmax : float
+            Maximum interatomic distance
+        radius: float
+            Radius within which to consider two atoms as connected in the graph
+        step: float
+            Step size for the Gaussian filter
+        pad_dim: int
+            Maximum number of nodes to pad in the graph
+        shuffle: bool
+            Shuffle indices
+        start_idx: int
+            Start index from which to select data interval
+        end_idx: int
+            End index from which to select data interval
+        """
         self.data_directory = data_directory
         self.target = target
         self.batch_size = batch_size
@@ -126,6 +172,9 @@ class CifDataGenerator(Sequence):
         return int(np.floor(len(self.df) / self.batch_size))
 
     def __getitem__(self, idx):
+        """
+        Computes graph featurs from CIF string
+        """
         indexes = np.arange(0, len(self.df))[idx*self.batch_size:(idx+1)*self.batch_size]
         
         atomic_features = []

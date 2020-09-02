@@ -1,3 +1,15 @@
+"""
+## CGCNN model and crystal graph conv keras layer
+--------------------------------------------------
+## Author: Batuhan Yildirim
+## Email: by256@cam.ac.uk
+## Version: 1.0
+--------------------------------------------------
+## License: MIT
+## Copyright: Copyright Callum Court & Batuhan Yildirim 2020, ICSG3D
+-------------------------------------------------
+"""
+
 import tensorflow as tf
 import keras.backend as K
 from keras import activations
@@ -7,8 +19,19 @@ from keras.layers import Layer, Input, Dense
 
 
 class CrystalGraphConv(Layer):
-
+    """
+    Crystal graph convolution Keras layer 
+    https://journals-aps-org.ezp.lib.cam.ac.uk/prl/abstract/10.1103/PhysRevLett.120.145301
+    """
     def __init__(self, atom_fea_len, nbr_fea_len, **kwargs):
+        """
+        Parameters
+        ----------
+        atom_fea_len : int
+            Number of atom (node features).
+        nbr_fea_len : int
+            Number of bond (edge features).
+        """
         super(CrystalGraphConv, self).__init__(**kwargs)
         self.atom_fea_len = atom_fea_len
         self.nbr_fea_len = nbr_fea_len
@@ -81,7 +104,10 @@ class CrystalGraphConv(Layer):
 
 
 class MaxPooling(Layer):
-
+    """
+    Global max pooling layer. 
+    Computes the node-wise maximum over the node feature matrix of a graph.
+    """
     def __init__(self, activation=None, **kwargs):
         self.activation = activations.get(activation)
         super(MaxPooling, self).__init__(**kwargs)
@@ -97,7 +123,10 @@ class MaxPooling(Layer):
 
 
 class MeanPooling(Layer):
-
+    """
+    Global average pooling layer. 
+    Computes the node-wise average over the node feature matrix of a graph.
+    """
     def __init__(self, activation=None, **kwargs):
         self.activation = activations.get(activation)
         super(MeanPooling, self).__init__(**kwargs)
@@ -114,6 +143,9 @@ class MeanPooling(Layer):
 
 
 def CGCNN(batch_size):
+    """
+    CGCNN Keras model
+    """
     atom_features = Input(batch_shape=(batch_size, 50, 93), name='atom_input')
     bond_features = Input(batch_shape=(batch_size, 50, 12, 41), name='bond_input')
     atom_neighbour_idxs = Input(batch_shape=(batch_size, 50, 12), name='atom_n_input', dtype='int32')
