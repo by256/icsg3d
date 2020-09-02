@@ -1,5 +1,4 @@
 """
-<<<<<<< HEAD
 ## Script for training the Cond-DFC-VAE
 ## Example:
 ## >> python3 train_vae.py --name heusler --samples 5000 --epochs 100 
@@ -12,12 +11,6 @@
 ## Copyright: Copyright Callum Court & Batuhan Yildirim 2020, ICSG3D
 -------------------------------------------------
 """
-
-=======
-ICSG3D/train_vae.py
-Script for traiing the VAE architecture
-"""
->>>>>>> c963ee508964313b53d4aeb5634738321656a33e
 import argparse
 import os
 import random
@@ -25,7 +18,6 @@ import re
 import warnings
 
 import numpy as np
-<<<<<<< HEAD
 
 import tensorflow as tf
 from utils import data_split
@@ -144,7 +136,6 @@ if __name__ == "__main__":
     lattice_vae.train(
         training_generator, validation_generator, epochs=epochs, weights=weights
     )
-=======
 import tensorflow as tf
 
 from utils import data_split
@@ -191,4 +182,3 @@ if __name__ == '__main__':
     # # Train
     lattice_vae = LatticeDFCVAE(condition=condition, perceptual_model=perceptual_model, cond_shape=namespace.ncond)
     lattice_vae.train(training_generator, validation_generator, epochs=epochs, weights=weights)
->>>>>>> c963ee508964313b53d4aeb5634738321656a33e
