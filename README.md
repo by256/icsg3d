@@ -20,7 +20,7 @@ J. Chem. Inf Model. (accepted for publication) (2020). <b><br />
 ![Example crystals generated with our system](images/crystals-1.png)
 
 # Representation learning of crystal structures
-![Latent space embedding](images/latent_annotated.png)
+![Latent space embedding](images/latent_annotated-1.png)
 
 
 
