@@ -3,7 +3,7 @@ astor==0.8.0
 astroid==2.3.1
 attrs==19.3.0
 backcall==0.1.0
-bleach==1.5.0
+bleach==3.1.4
 cachetools==3.1.1
 certifi==2019.9.11
 chardet==3.0.4
@@ -66,7 +66,7 @@ pandocfilters==1.4.2
 parso==0.5.1
 pexpect==4.7.0
 pickleshare==0.7.5
-Pillow==6.2.1
+Pillow==7.1.0
 prometheus-client==0.7.1
 prompt-toolkit==2.0.10
 protobuf==3.10.0
@@ -102,7 +102,7 @@ sympy==1.4
 tabulate==0.8.5
 tensorboard==2.0.2
 tensorflow-estimator==2.0.1
-tensorflow-gpu==2.0.0
+tensorflow-gpu==2.0.1
 termcolor==1.1.0
 terminado==0.8.2
 testpath==0.4.2
