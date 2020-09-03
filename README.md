@@ -105,3 +105,8 @@ This will create a new directory where you will find Cifs, density matrices, spe
 
 ## Citation
 C. J. Court, B. Yildirim, A. Jain, J. M. Cole, "3-D Inorganic Crystal Structure Generation and Property Prediction via Representation Learning", *J. Chem. Inf. Model.* 2020 (accepted for publication).
+
+## Funding Statement
+This project was financially supported by the Engineering and Physical Sciences Research Council (EPSRC, EP/L015552/1), Science and Technology 
+Facilities Council (STFC) and the Royal Academy of Engineering 
+(RCSRF1819\7\10).
