@@ -102,7 +102,7 @@ sympy==1.4
 tabulate==0.8.5
 tensorboard==2.0.2
 tensorflow-estimator==2.0.1
-tensorflow-gpu==2.0.0
+tensorflow-gpu==2.0.1
 termcolor==1.1.0
 terminado==0.8.2
 testpath==0.4.2
