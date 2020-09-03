@@ -37,7 +37,7 @@ Our pipeline consists of 3 components.
 ![VAE](images/crystal_vae-1.png)
 Encoder: 4x 3D convolutions, BatchNorm, ReLU and Maxpooling
 
-Bottleneck: 3D convolution, LeakyReLU, Dense (256), 2x Dense (256) ($\mu$ and $\sigma$)
+Bottleneck: 3D convolution, LeakyReLU, Dense (256), 2x Dense (256) (<img src="https://render.githubusercontent.com/render/math?math=\mu"> and <img src="https://render.githubusercontent.com/render/math?math=\sigma">)
 
 Decoder: 4x 3D convolutions, BatchNorm, ReLU and upsampling
 
