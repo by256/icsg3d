@@ -20,7 +20,7 @@ J. Chem. Inf Model. (accepted for publication) (2020). <b><br />
 ![Example crystals generated with our system](images/crystals-1.png)
 
 # Representation learning of crystal structures
-![Latent space embedding](images/latent_anotated.png)
+![Latent space embedding](images/latent_annotated.png)
 
 
 
@@ -34,16 +34,16 @@ Our pipeline consists of 3 components.
 
 ### VAE
 
-![VAE](images/vae-1.png)
+![VAE](images/crystal_vae-1.png)
 Encoder: 4x 3D convolutions, BatchNorm, ReLU and Maxpooling
 
-Bottleneck: 3D convolution, LeakyReLU, Dense (256), 2x Dense (256) (\mu and \sigma)
+Bottleneck: 3D convolution, LeakyReLU, Dense (256), 2x Dense (256) ($\mu$ and $\sigma$)
 
 Decoder: 4x 3D convolutions, BatchNorm, ReLU and upsampling
 
 ### UNET
 
-![Unet](images/unet-1.png)
+![Unet](images/unet.png)
 Downward: 4 x 2 x 3D convolutions, ReLU, BatchNorm, and pooling
 
 Bottleneck: 2 x 3D convolutions, ReLU BatchNorm
@@ -52,7 +52,7 @@ Upward: 4 x 2 x 3D convolutions, ReLU, BatchNorm and UpSampling
 
 ### CGCNN
 
-![CGCNN](images/cgcnn-1.png)
+![CGCNN](images/gnn-1.png)
 
 ## Installation
 
@@ -65,7 +65,7 @@ Upward: 4 x 2 x 3D convolutions, ReLU, BatchNorm and UpSampling
 
 The system works on crystallographic information files (CIFs) to train the deep learning pipeline. In theory these can be from any source, but by default we use the materialsproject API.
 
-For example, to retrieve all CIFs for cubic perovskits (ABX3):
+For example, to retrieve all CIFs for cubic perovskites (ABX3):
 > python3 query_matproj.py --anonymous_formula="{'A': 1.0, 'B': 1.0, 'C':3.0}" --system=cubic --name=perovskites
 
 This will create a data/perovskites folder containing the cifs and a csv with associated properties
