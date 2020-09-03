@@ -23,7 +23,6 @@ J. Chem. Inf Model. (accepted for publication) (2020). </b><br />
 ![Latent space embedding](images/latent_annotated-1.png)
 
 
-
 ## Architecture
 
 Our pipeline consists of 3 components.
@@ -102,11 +101,11 @@ Attempt to generate 1000 new samples arund a base compound CeCrO3 with variance 
 > python3 generate.py --name perovskites --nsamples 1000 --base CeCrO3 --var 0.5
 
 This will create a new directory where you will find Cifs, density matrices, species matrices and properties for all generated compounds.
+![Random Generations](images/rand_gens-1.png)
+
 
 ## Citation
 <b>C. J. Court, B. Yildirim, A. Jain, J. M. Cole, <i>"3-D Inorganic Crystal Structure Generation and Property Prediction via Representation Learning"</i>, *J. Chem. Inf. Model.* 2020 (accepted for publication).</b>
 
 ## Funding Statement
-This project was financially supported by the Engineering and Physical Sciences Research Council (EPSRC, EP/L015552/1), Science and Technology 
-Facilities Council (STFC) and the Royal Academy of Engineering 
-(RCSRF1819\7\10).
+This project was financially supported by the Engineering and Physical Sciences Research Council (EPSRC, EP/L015552/1), Science and Technology Facilities Council (STFC) and the Royal Academy of Engineering (RCSRF1819\7\10).
