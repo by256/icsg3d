@@ -82,7 +82,7 @@ Trai the unet for as many epochs as needed
 ## Train the VAE
 
 Make sure you train the VAE second (as it uses the unet as a DFC perceptual model)
-> python3 train_vae.py --name perovskites --nsamples 1000 --epochs 250
+> python3 train_vae.py --name perovskites --samples 1000 --epochs 250
 
 ## View some results
 
