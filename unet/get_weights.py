@@ -16,7 +16,7 @@
 import numpy as np
 import os
 
-def get_weights(path, training_ids, n_classes=95):
+def get_weights(path='', training_ids=[], n_classes=95):
     if not path:
         return np.ones(n_classes)
     weights = np.zeros(n_classes)
