@@ -76,7 +76,7 @@ The various network input matrices can be created by
 
 ## Train the UNET
 
-Trai the unet for as many epochs as needed
+Train the unet for as many epochs as needed
 > python3 train_unet.py --name perovskites --samples 10000 --epochs 50
 
 ## Train the VAE
