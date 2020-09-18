@@ -1,2 +1,0 @@
-models/unet/unet_weights_mixed_full.best.hdf5 filter=lfs diff=lfs merge=lfs -text
-models/unet/unet_weights_mixed_full.best.h5 filter=lfs diff=lfs merge=lfs -text
