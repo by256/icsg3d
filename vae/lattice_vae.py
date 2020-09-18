@@ -101,6 +101,7 @@ class LatticeDFCVAE:
         pm_layer_weights=[1.0, 1.0, 1.0, 1.0],
         cond_shape=10,
         custom_objects=custom_objects,
+        output_dir = 'output'
     ):
         self.input_shape = input_shape
         self.kernel_size = kernel_size
@@ -114,6 +115,7 @@ class LatticeDFCVAE:
         self.batch_size = None
         self.cond_shape = cond_shape
         self.losses = []
+        self.sdir = save_dir
 
         self.pm = load_model(perceptual_model, custom_objects=custom_objects)
         self.pm_layers = pm_layers
@@ -323,16 +325,16 @@ class LatticeDFCVAE:
                 e,
             ] = [epoch_train_loss, epoch_val_loss]
             if e % 10 == 0:
-                self.plot_losses(epoch=e, name="output/vae/vae_losses.png")
+                self.plot_losses(epoch=e, name=os.path.join(self.sdir, "vae_losses.png"))
             if epoch_val_loss < best_loss:
                 best_loss = epoch_val_loss
                 self.plot_reconstructions(
-                    val_gen, epoch=e, name="output/vae/vae_reconstructions_best.png"
+                    val_gen, epoch=e, name=os.path.join(self.sdir, "vae_reconstructions.png")
                 )
                 self.plot_samples(
-                    self.batch_size, epoch=e, name="output/vae/vae_samples_best.png"
+                    self.batch_size, epoch=e, name=os.path.join(self.sdir, "vae_samples.png")
                 )
-                self.plot_kde(val_gen, epoch=e, name="output/vae/kde_best.png")
+                self.plot_kde(val_gen, epoch=e, name=os.path.join(self.sdir, "vae_kde.png")
                 print("Saving Model")
                 self.model.save_weights(self.filepath)
         self.model.load_weights(self.filepath)

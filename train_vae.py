@@ -94,6 +94,7 @@ if __name__ == "__main__":
     condition = namespace.cond
     weights_dir = os.path.join("saved_models", "vae", mode)
     os.makedirs(weights_dir, exist_ok=True)
+    os.makedirs(os.path.join("output", "vae", mode), exist_ok=True)
     weights = os.path.join(weights_dir, "vae_weights_" + mode + ".best.hdf5")
     perceptual_model = os.path.join(
         "saved_models", "unet", mode, "unet_weights_" + mode + ".best.h5"
@@ -133,6 +134,7 @@ if __name__ == "__main__":
     lattice_vae = LatticeDFCVAE(
         perceptual_model=perceptual_model,
         cond_shape=namespace.ncond,
+        output_dir=os.path.join("output", "vae", mode),
     )
     lattice_vae.train(
         training_generator, validation_generator, epochs=epochs, weights=weights

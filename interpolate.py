@@ -116,7 +116,7 @@ if __name__ == "__main__":
     data_path = os.path.join("data", mode, "matrices")
     target = "formation_energy_per_atom"
     n_interps = namespace.ninterps
-    os.makedirs(os.path.join("output/", "interpolation"), exist_ok=True)
+    os.makedirs(os.path.join("output", "interpolation"), exist_ok=True)
 
     vae_weights = os.path.join(
         "saved_models", "vae", mode, "vae_weights_" + mode + ".best.hdf5"
@@ -201,5 +201,5 @@ if __name__ == "__main__":
             axes[i][j].set_xticks([])
             axes[i][j].set_yticks([])
     plt.subplots_adjust(bottom=0.05, top=0.95, hspace=0.3)
-    plt.savefig("output/interpolation/" + mode + "_rows.svg", format="svg")
+    plt.savefig("output", "interpolation" + mode + "_rows.svg", format="svg")
     plt.show(block=True)

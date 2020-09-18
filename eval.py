@@ -236,7 +236,7 @@ if __name__ == "__main__":
     plt.xlabel("EMD (Angstrom)")
     plt.ylabel("Count")
     plt.legend(loc="best")
-    plt.savefig("output/eval/" + mode + "/emd.svg", format="svg")
+    plt.savefig(os.path.join("output", "eval" + mode + "emd.svg"), format="svg")
     plt.close()
 
     plt.figure()
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     plt.xlabel("$|a_{true}$ - $a_{pred}|$ (Angstrom)")
     plt.ylabel("Count")
     plt.legend(loc="best")
-    plt.savefig("output/eval/" + mode + "/lattice_a.svg", format="svg")
+    plt.savefig(os.path.join("output", "eval" + mode + "lattice_a.svg"), format="svg")
     plt.close()
 
     plt.figure()
@@ -264,7 +264,7 @@ if __name__ == "__main__":
     plt.xlabel("$|b_{true}$ - $b_{pred}|$ (Angstrom)")
     plt.ylabel("Count")
     plt.legend(loc="best")
-    plt.savefig("output/eval/" + mode + "/lattice_b.svg", format="svg")
+    plt.savefig(os.path.join("output", "eval" + mode + "lattice_b.svg"), format="svg")
     plt.close()
 
     plt.figure()
@@ -278,7 +278,7 @@ if __name__ == "__main__":
     plt.xlabel("$|c_{true}$ - $c_{pred}|$ (Angstrom)")
     plt.ylabel("Count")
     plt.legend(loc="best")
-    plt.savefig("output/eval/" + mode + "/lattice_c.svg", format="svg")
+    plt.savefig(os.path.join("output", "eval" + mode + "lattice_c.svg"), format="svg")
     plt.close()
 
     plt.figure()
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     plt.xlabel("$N_{true}$ - $N_{pred}$")
     plt.ylabel("Count")
     plt.legend(loc="best")
-    plt.savefig("output/eval/" + mode + "/atoms.svg", format="svg")
+    plt.savefig(os.path.join("output", "eval" + mode + "atoms.svg"), format="svg")
     plt.close()
 
     x = np.linspace(0, 10, 100)
@@ -302,7 +302,7 @@ if __name__ == "__main__":
     plt.plot(x, x, "r--")
     plt.xlabel("$a$ True (Angstrom)")
     plt.ylabel("$a$ Pred (Angstrom)")
-    plt.savefig("output/eval/" + mode + "/lattice_a_tp.svg", format="svg")
+    plt.savefig(os.path.join("output", "eval" + mode + "lattice_a_tp.svg"), format="svg")
     plt.close()
 
     plt.figure()
@@ -310,7 +310,7 @@ if __name__ == "__main__":
     plt.plot(x, x, "r--")
     plt.xlabel("$b$ True (Angstrom)")
     plt.ylabel("$b$ Pred (Angstrom)")
-    plt.savefig("output/eval/" + mode + "/lattice_b_tp.svg", format="svg")
+    plt.savefig(os.path.join("output", "eval" + mode + "lattice_b_tp.svg"), format="svg")
     plt.close()
 
     plt.figure()
@@ -318,5 +318,5 @@ if __name__ == "__main__":
     plt.plot(x, x, "r--")
     plt.xlabel("$c$ True (Angstrom)")
     plt.ylabel("$c$ Pred (Angstrom)")
-    plt.savefig("output/eval/" + mode + "/lattice_c_tp.svg", format="svg")
+    plt.savefig(os.path.join("output", "eval" + mode + "lattice_c_tp.svg"), format="svg")
     plt.close()
