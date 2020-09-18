@@ -59,6 +59,11 @@ Upward: 4 x 2 x 3D convolutions, ReLU, BatchNorm and UpSampling
     > git clone https://github.com/by256/icsg3d
 2. Install requirements
     > python3 -m pip install -r requirements.txt
+    
+## Requirements
+Tensorflow2.0 is not current supported, tested with tensorflow-gpu==2.1.0 and Keras==2.3.1
+Requires keras-contrib
+
 
 ## Getting Data
 
