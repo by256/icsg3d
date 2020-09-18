@@ -61,7 +61,7 @@ Upward: 4 x 2 x 3D convolutions, ReLU, BatchNorm and UpSampling
     > python3 -m pip install -r requirements.txt
     
 ## Requirements
-Tensorflow2.0 is not current supported, tested with tensorflow-gpu==2.1.0 and Keras==2.3.1
+Tensorflow2.0 is not currently supported, tested with tensorflow-gpu==2.1.0 and Keras==2.3.1
 Requires keras-contrib
 
 
