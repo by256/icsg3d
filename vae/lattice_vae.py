@@ -334,7 +334,7 @@ class LatticeDFCVAE:
                 self.plot_samples(
                     self.batch_size, epoch=e, name=os.path.join(self.sdir, "vae_samples.png")
                 )
-                self.plot_kde(val_gen, epoch=e, name=os.path.join(self.sdir, "vae_kde.png")
+                self.plot_kde(val_gen, epoch=e, name=os.path.join(self.sdir, "vae_kde.png"))
                 print("Saving Model")
                 self.model.save_weights(self.filepath)
         self.model.load_weights(self.filepath)
