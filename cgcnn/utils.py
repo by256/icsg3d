@@ -27,7 +27,7 @@ def pad_features(atom_features, bond_features, atom_neighbour_idxs, pad_dim=50):
     return atom_features, bond_features, atom_neighbour_idxs, mask
 
 
-def evaluate_cgcnn_from_cif(model, cif, weights, batch_size, atom_init='./cgcnn/atom_init_cjc.json', weights_dir='saved_models/cgcnn'):
+def evaluate_cgcnn_from_cif(model, cif, weights, batch_size, atom_init='cgcnn/atom_init.json', weights_dir='saved_models/cgcnn'):
 
     atom_init = AtomCustomJSONInitializer(atom_init)
     max_num_nbr = 12

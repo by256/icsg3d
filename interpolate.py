@@ -37,8 +37,8 @@ from watershed import watershed_clustering
 
 font = {"family": "serif"}
 rc("font", **font)
-rc("text", usetex=True)
-rc("text.latex", preamble=r"\usepackage{cmbright}")
+# rc("text", usetex=True)
+# rc("text.latex", preamble=r"\usepackage{cmbright}")
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # surpress tf warnings
 matplotlib.use("TkAgg")
@@ -168,10 +168,7 @@ if __name__ == "__main__":
 
         Ma = np.concatenate([Ma, Ca], axis=-1)
         Mb = np.concatenate([Mb, Cb], axis=-1)
-        if namespace.interpolate == "linear":
-            Ms = interpolate(Ma, Mb, cond, vae, num_interps=n_interps)
-        elif namespace.interpolate == "slerp":
-            Ms = interpolate_slerp(Ma, Mb, cond, vae, num_interps=n_interps)
+        Ms = interpolate(Ma, Mb, cond, vae, num_interps=n_interps)
         rows.append(Ms)
 
     # Plot the rows
@@ -201,5 +198,5 @@ if __name__ == "__main__":
             axes[i][j].set_xticks([])
             axes[i][j].set_yticks([])
     plt.subplots_adjust(bottom=0.05, top=0.95, hspace=0.3)
-    plt.savefig("output", "interpolation" + mode + "_rows.svg", format="svg")
+    plt.savefig(os.path.join("output", "interpolation" + mode + "_rows.svg"), format="svg")
     plt.show(block=True)

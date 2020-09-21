@@ -93,6 +93,13 @@ if __name__ == "__main__":
         help="Number of condition bins",
         default=10,
     )
+    parser.add_argument(
+        "--d",
+        metavar="d",
+        type=int,
+        help="Number of map voxels",
+        default=32,
+    )
 
     namespace = parser.parse_args()
 
@@ -123,7 +130,7 @@ if __name__ == "__main__":
         "refractive_index",
         "shear_modulus",
         "energy_per_atom",
-        "bandgap",
+        "band_gap",
     ]
 
     base_compound = namespace.base
@@ -154,8 +161,9 @@ if __name__ == "__main__":
     out_dir = os.path.join(
         "output",
         "results",
-        base_formula + "_" + str(datetime.now()) + "_v=" + str(variance),
+        base_formula + "_" + "_v=" + str(variance),
     )
+    os.makedirs(out_dir)
     os.makedirs(os.path.join(out_dir, "cifs"))
     os.makedirs(os.path.join(out_dir, "densities"))
     os.makedirs(os.path.join(out_dir, "species"))
@@ -251,10 +259,7 @@ if __name__ == "__main__":
             else:
                 formula_count = formula
 
-            if (
-                not structure.is_valid()
-                or not comp.anonymized_formula in desired_structure
-            ):
+            if not structure.is_valid():
                 continue
 
             filename = os.path.join(out_dir, "cifs", formula_count + ".cif")
