@@ -115,7 +115,7 @@ class LatticeDFCVAE:
         self.batch_size = None
         self.cond_shape = cond_shape
         self.losses = []
-        self.sdir = save_dir
+        self.sdir = output_dir
 
         self.pm = load_model(perceptual_model, custom_objects=custom_objects)
         self.pm_layers = pm_layers
