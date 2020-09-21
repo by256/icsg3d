@@ -115,7 +115,7 @@ class LatticeDFCVAE:
         self.batch_size = None
         self.cond_shape = cond_shape
         self.losses = []
-        self.sdir = save_dir
+        self.sdir = output_dir
 
         self.pm = load_model(perceptual_model, custom_objects=custom_objects)
         self.pm_layers = pm_layers
@@ -378,13 +378,10 @@ class LatticeDFCVAE:
         return
 
     def plot_reconstructions(self, val_gen, epoch, name=None):
-        fig, axes = plt.subplots(10, 2)
+        fig, axes = plt.subplots(int(self.batch_size/2), 2)
         ax = 0
         for M, cond in val_gen:
-            if self.condition:
-                recon = self.model.predict([M, cond])
-            else:
-                recon = self.model.predict(M)
+            recon = self.model.predict([M, cond])
             axes[ax][0].imshow(M[0, :, :, 16, 0])
             axes[ax][1].imshow(recon[0, :, :, 16, 0])
             axes[ax][0].set_xticks([])
@@ -393,7 +390,7 @@ class LatticeDFCVAE:
             axes[ax][1].set_yticks([])
 
             ax += 1
-            if ax == 10:
+            if ax == int(self.batch_size/2):
                 break
         if name is None:
             name = "output/vae/reconstructions_epoch_%d.png" % epoch
@@ -406,10 +403,7 @@ class LatticeDFCVAE:
         z = []
         # Real samples
         for M, p in val_gen:
-            if self.condition:
-                _, _, z_m = self.encoder.predict([M, p])
-            else:
-                _, _, z_m = self.encoder.predict(M)
+            _, _, z_m = self.encoder.predict([M, p])
             for iz in range(len(z_m)):
                 z.append(z_m[iz])
             if len(z) >= maxz:

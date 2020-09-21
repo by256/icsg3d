@@ -104,8 +104,11 @@ if __name__ == "__main__":
     training_ids, validation_ids = data_split(
         path, n, frac=namespace.split, n_rot=namespace.nrot
     )
-    training_ids = training_ids[: -1 * int(len(training_ids) % batch_size)]
-    validation_ids = validation_ids[: -1 * int(len(validation_ids) % batch_size)]
+    # Make sure ids are unit of batch size
+    if len(training_ids) % batch_size != 0:
+        training_ids = training_ids[:-1 * int(len(training_ids) % batch_size)]
+    if len(validation_ids) % batch_size != 0:
+        validation_ids = validation_ids[:-1*int(len(validation_ids) % batch_size)]
     print(len(training_ids), len(validation_ids))
 
     # Create the VAE data generators

@@ -108,6 +108,16 @@ Attempt to generate 1000 new samples arund a base compound CeCrO3 with variance 
 This will create a new directory where you will find Cifs, density matrices, species matrices and properties for all generated compounds.
 ![Random Generations](images/rand_gens-1.png)
 
+## Using pre-trained models
+The pre-trained models in the models directory. To use these, you'll need to move/rename the models to a corresponding directories:
+
+> saved_models/unet/mode/unet_weights_mode.h5 
+> saved_models/unet/mode/class_weights.npy
+> saved_models/vae/mode/vae_weights_mode.hdf5
+> saved_models/cgcnn/
+
+where mode is the name of your data directory. 
+
 
 ## Citation
 <b>C. J. Court, B. Yildirim, A. Jain, J. M. Cole, <i>"3-D Inorganic Crystal Structure Generation and Property Prediction via Representation Learning"</i>, *J. Chem. Inf. Model.* 2020 (accepted for publication).</b>
