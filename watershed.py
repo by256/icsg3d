@@ -16,7 +16,7 @@ from itertools import product
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage.morphology import distance_transform_edt
-from skimage import filters, measure, morphology
+from skimage import filters, measure, morphology, segmentation
 
 from viz import plot_points_3d
 
@@ -108,7 +108,7 @@ def segment_nuclei(
         markers[unknown == 1] = 0
 
         # WS
-        wss = morphology.watershed(binary_bbox, markers)
+        wss = segmentation.watershed(binary_bbox, markers)
         wss[wss == 1] = 0
         max_class = np.max(R)
         wss = wss + max_class  # sub region with classes relabelled
