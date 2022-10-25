@@ -8,7 +8,7 @@ cachetools==3.1.1
 certifi==2019.9.11
 chardet==3.0.4
 cycler==0.10.0
-dataclasses==0.7
+#dataclasses==0.7
 decorator==4.4.0
 defusedxml==0.6.0
 einops==0.1.0
@@ -39,7 +39,7 @@ jupyter-console==6.0.0
 jupyter-core==4.6.0
 Keras==2.3.1
 Keras-Applications==1.0.8
-keras-contrib==2.0.8
+#keras-contrib==2.0.8
 Keras-Preprocessing==1.1.0
 kiwisolver==1.1.0
 lazy-object-proxy==1.4.2
@@ -100,11 +100,11 @@ six==1.12.0
 spglib==1.14.1.post0
 sympy==1.4
 tabulate==0.8.5
-tensorflow-gpu==2.1.2
+#tensorflow-gpu==2.1.2
 termcolor==1.1.0
 terminado==0.8.2
 testpath==0.4.2
-torch==1.2.0
+#torch==1.2.0
 tornado==6.0.3
 traitlets==4.3.3
 typed-ast==1.4.0
